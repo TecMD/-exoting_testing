@@ -52,28 +52,12 @@ export const favorites = {
 // ================================================================
 // TC-05 · СОРТИРОВКА
 // ================================================================
-export const sorting = {
-  select: 'select[name="sort"]',
-  priceItem: '.price_main',
-  options: {
-    priceAsc: /по цене.*возраст/i,
-    priceDesc: /по цене.*убыв/i,
-    name: /по названию/i,
-  },
-};
+
 
 // ================================================================
 // TC-06 · КАРТОЧКА ТОВАРА
 // ================================================================
-export const product = {
-  card: '.js-product-list-item',
-  title: '.item-c__title',
-  price: '.price_main',
-  image: 'img.js-item__image',
-  moreBtn: 'a:has-text("Подробнее")',
-  frozenMarker: '.item-c__badges',
-  pageHeading: 'h1.section-title',
-};
+
 
 // ================================================================
 // TC-07 · ВИДЖЕТ ЧАТА
@@ -86,3 +70,4 @@ export const chat = {
   submitBtn: 'button:has-text("Отправить")',
   consentCheckbox: 'input[type="checkbox"]',
 };
+
