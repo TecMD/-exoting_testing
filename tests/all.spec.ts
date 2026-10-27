@@ -87,5 +87,21 @@ test.describe('TC-06 Карточка товара', () => {
 // TC-07 · ВИДЖЕТ ЧАТА · ветка: feat/tc-07-chat
 // ================================================================
 test.describe('TC-07 Виджет чата', () => {
-  // TODO: участник TC-07 пишет свои тесты здесь
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+    await page.locator(chat.fab).click();
+  });
+
+  test('ссылки соцсетей корректны', async ({ page }) => {
+    await expect(page.locator(chat.telegramLink).first()).toHaveAttribute('href', /t\.me/);
+    await expect(page.locator(chat.maxLink).first()).toHaveAttribute('href', /.+/);
+  });
+
+  test('кнопка «Отправить» активна только при согласии', async ({ page }) => {
+    await page.locator(chat.callbackBtn).click();
+    const submit = page.locator(chat.submitBtn);
+    await expect(submit).toBeDisabled();
+    await page.locator(chat.consentCheckbox).check();
+    await expect(submit).toBeEnabled();
+  });
 });
