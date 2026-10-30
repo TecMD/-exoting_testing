@@ -140,9 +140,32 @@ test.describe('TC-05 Сортировка', () => {
 // TC-06 · КАРТОЧКА ТОВАРА · ветка: feat/tc-06-product
 // ================================================================
 test.describe('TC-06 Карточка товара', () => {
-  // TODO: участник TC-06 пишет свои тесты здесь
-});
+  test('изображение, название и цена отображаются', async ({ page }) => {
+    await page.goto('/catalog');
+    const card = page.locator(product.card).first();
+    await expect(card.locator(product.image).first()).toBeVisible();
+    await expect(card.locator(product.title)).not.toBeEmpty();
+    await expect(card.locator(product.price)).toHaveText(/\d/);
+  });
 
+  test('кнопка «Подробнее» открывает страницу товара', async ({ page }) => {
+    await page.goto('/catalog');
+    const card = page.locator(product.card).first();
+    const title = await card.locator(product.title).innerText();
+    await card.locator(product.moreBtn).first().click();
+    await expect(page).toHaveURL(/\/product\//);
+    await expect(page.locator(product.pageHeading)).toContainText(title.trim());
+  });
+
+  test('снежинка отображается у замороженных кормов', async ({ page }) => {
+    await page.goto('/catalog?category=frozen');
+    const cards = page.locator(product.card);
+    const count = await cards.count();
+    for (let i = 0; i < count; i++) {
+      await expect(cards.nth(i).locator(product.frozenMarker)).toBeVisible();
+    }
+  });
+});
 // ================================================================
 // TC-07 · ВИДЖЕТ ЧАТА · ветка: feat/tc-07-chat
 // ================================================================
