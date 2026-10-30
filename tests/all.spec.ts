@@ -65,15 +65,75 @@ test.describe('TC-02 Шапка сайта', () => {
   });
 });
 
+================================================================
+// TC-03 · ПОИСК · ветка: feat/tc-03-search
 // ================================================================
-// TC-03 и TC-04 — перенесены в tests/search-cart.spec.ts
+test.describe('TC-03 Поиск', () => {
+  test('случайные символы не дают результатов', async ({ page }) => {
+    await page.goto('/');
+    const input = page.locator(search.input).first();
+    await input.fill('zxqwv1234!@#');
+    await input.press('Enter');
+    await expect(page.getByText(search.emptyState)).toBeVisible();
+  });
+
+  test('неполное наименование находит товары', async ({ page }) => {
+    await page.goto('/');
+    const input = page.locator(search.input).first();
+    await input.fill('сверч');
+    const suggestions = page.locator(search.suggestionItem);
+    await expect(suggestions.first()).toBeVisible();
+    await expect(suggestions.first()).toContainText(/сверч/i);
+  });
+});
+
 // ================================================================
+// TC-04 · КОРЗИНА И ИЗБРАННОЕ · ветка: feat/tc-04-cart
+// ================================================================
+test.describe('TC-04 Корзина и избранное', () => {
+  test('добавление в корзину увеличивает счётчик и сохраняется после reload', async ({ page }) => {
+    await page.goto('/catalog');
+    const firstCard = page.locator(product.card).first();
+    await firstCard.locator(cart.addBtn).first().click();
+    await expect(page.locator(cart.counter).first()).toHaveText('1');
+    await page.reload();
+    await expect(page.locator(cart.counter).first()).toHaveText('1');
+  });
+
+  test('иконка "В избранное" активируется и сохраняется', async ({ page }) => {
+    await page.goto('/catalog');
+    const heart = page.locator(product.card).first().locator(favorites.heartBtn);
+    await heart.click();
+    await expect(heart).toHaveClass(favorites.heartActiveClass);
+
+    await page.reload();
+    await expect(heart).toHaveClass(favorites.heartActiveClass);
+  });
+});
 
 // ================================================================
 // TC-05 · СОРТИРОВКА · ветка: feat/tc-05-sorting
 // ================================================================
 test.describe('TC-05 Сортировка', () => {
-  // TODO: участник TC-05 пишет свои тесты здесь
+  test('по цене по возрастанию', async ({ page }) => {
+    await page.goto('/catalog');
+    await page.locator(sorting.select).first().selectOption({ label: sorting.options.priceAsc });
+    
+    const texts = await page.locator(sorting.priceItem).allTextContents();
+    const prices = texts.map((t) => Number(t.replace(/[^\d]/g, '')));
+    
+    expect(prices).toEqual([...prices].sort((a, b) => a - b));
+  });
+
+  test('по цене по убыванию', async ({ page }) => {
+    await page.goto('/catalog');
+    await page.locator(sorting.select).first().selectOption({ label: sorting.options.priceDesc });
+    
+    const texts = await page.locator(sorting.priceItem).allTextContents();
+    const prices = texts.map((t) => Number(t.replace(/[^\d]/g, '')));
+    
+    expect(prices).toEqual([...prices].sort((a, b) => b - a));
+  });
 });
 
 // ================================================================
