@@ -65,7 +65,15 @@ export const sorting = {
 // ================================================================
 // TC-06 · КАРТОЧКА ТОВАРА
 // ================================================================
-
+export const product = {
+  card: '.js-product-list-item',
+  title: '.item-c__title',
+  price: '.price_main',
+  image: 'img.js-item__image',
+  moreBtn: 'a:has-text("Подробнее")',
+  frozenMarker: '.item-c__badges',
+  pageHeading: 'h1.section-title',
+};
 
 // ================================================================
 // TC-07 · ВИДЖЕТ ЧАТА
