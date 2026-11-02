@@ -65,7 +65,7 @@ test.describe('TC-02 Шапка сайта', () => {
   });
 });
 
-================================================================
+// ================================================================
 // TC-03 · ПОИСК · ветка: feat/tc-03-search
 // ================================================================
 test.describe('TC-03 Поиск', () => {
@@ -160,12 +160,16 @@ test.describe('TC-06 Карточка товара', () => {
   test('снежинка отображается у замороженных кормов', async ({ page }) => {
     await page.goto('/catalog?category=frozen');
     const cards = page.locator(product.card);
+    // count() не ждёт загрузки: без этого цикл мог пройти по 0 карточек и тест был бы «зелёным» зря
+    await expect(cards.first()).toBeVisible();
     const count = await cards.count();
+    expect(count).toBeGreaterThan(0);
     for (let i = 0; i < count; i++) {
       await expect(cards.nth(i).locator(product.frozenMarker)).toBeVisible();
     }
   });
 });
+
 // ================================================================
 // TC-07 · ВИДЖЕТ ЧАТА · ветка: feat/tc-07-chat
 // ================================================================
